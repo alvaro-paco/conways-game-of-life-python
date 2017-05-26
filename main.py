@@ -16,7 +16,14 @@ GLIDER = {
     (1, 2),
     (0, 2),
     (2, 1),
-    (1, 0),
+    (9, 9),
+    (8, 9),
+    (9, 8),
+    (8, 10),
+    (9, 10),
+    (10, 10),
+    (10, 9),
+    (10, 8)
 }
 
 
@@ -29,29 +36,20 @@ def neighbors(cell, distance=1):
             if not i == j == 0) # exclude the center cell
 
 
-def advance(board):
+def fillLife(ecosystem):
     """Advance the board one step and return it."""
-    new_board = set()
-    for cell in board:
+    new_board = []
+    for cell in ecosystem:
         cell_neighbors = set(neighbors(cell))
         # test if live cell dies
-        if len(board & cell_neighbors) in [2, 3]:
-            new_board.add(cell)
+        if len(ecosystem & cell_neighbors) in [2, 3]:
+            print(len(ecosystem & cell_neighbors))
+            new_board.append(cell)
         # test dead neighbors to see if alive
         for n in cell_neighbors:
-            if len(board & set(neighbors(n))) is 3:
-                new_board.add(n)
+            if len(ecosystem & set(neighbors(n))) is 3:
+                new_board.append(n)
     return new_board
-
-def print_board(board, size=None):
-    sizex = sizey = size or 0
-    for x, y in board:
-        sizex = x if x > sizex else sizex
-        sizey = y if y > sizey else sizey
-    for i in range(sizex + 1):
-        for j in range(sizey + 1):
-            sys.stdout.write(' x ' if (i, j) in board else ' . ')
-        print
 
 
 def constrain(board, size):
@@ -67,7 +65,7 @@ def fillBoard(screen):
     return rects
 
 
-def main(board, steps=75, size=20):
+def main(ecosystem):
     pygame.init()
 
     DISPLAY = pygame.display.set_mode((640, 480), 0, 32)
@@ -79,6 +77,9 @@ def main(board, steps=75, size=20):
 
     while True:
         for event in pygame.event.get():
+            for cell in fillLife(ecosystem):
+                x, y = cell
+                pygame.draw.rect(DISPLAY, (0, 0, 0), (x*9.5, y*9.5, 9, 9))
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
