@@ -1,4 +1,4 @@
-import Game
+from Game import Game
 
 ECOSYSTEM = {
     (2, 2),
@@ -16,7 +16,8 @@ ECOSYSTEM = {
 }
 
 def main():
-    game = Game(200, 200, ECOSYSTEM)
+    game = Game(20, 20, ECOSYSTEM)
+    print(game)
 
 if __name__ == '__main__':
     main()

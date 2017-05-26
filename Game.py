@@ -1,4 +1,4 @@
-import Cell
+from Cell import Cell
 
 class Game:
     """Authomaton Game-of-life implementation
@@ -13,36 +13,43 @@ class Game:
         """
         self.x = x
         self.y = y
-        self.ecosystem = setup
+        self.ecosystem = self.__setup(setup)
 
     def __str__(self):
-        pass
+        life = self.___fillLife()
+        for row in life:
+            row = ""
+            for cell in row:
+                row += " " + str(cell)
+            print('\n', row)
+
+    def __setup(self,cells):
+        ecosystem = []
+        for row in range(self.y):
+            grid_row = []
+            for column in range(self.x):
+                cell = Cell(row, column, True) if (row, column) in cells else Cell(row, column, False)
+                grid_row.append(cell)
+            ecosystem.append(grid_row)
+        return ecosystem
 
     def next_generation(self): pass
 
     def __draw(self):
-        pass
+        grid = [['o' for y in range(self.y)]for x in range(self.x)]
+        return grid
 
-    def __neighbors(self, cell, distance=1):
-        """Return the neighbors of cell."""
-        x, y = cell
-        r = range(0 - distance, 1 + distance)
-        return ((x + i, y + j)  # new cell offset from center
-                for i in r for j in r  # iterate over range in 2d
-                if not i == j == 0)  # exclude the center cell
-
-    def ___fillLife(self, ecosystem):
+    def ___fillLife(self):
         """Advance the board one step and return it."""
         new_board = []
-        for cell in ecosystem:
-            cell_neighbors = set(neighbors(cell))
+        for cell in self.ecosystem:
+            cell_neighbors = cell.getNeighbors()
             # test if live cell dies
-            if len(ecosystem & cell_neighbors) in [2, 3]:
-                print(len(ecosystem & cell_neighbors))
+            if len(cell_neighbors) in [2, 3]:
                 new_board.append(cell)
             # test dead neighbors to see if alive
             for n in cell_neighbors:
-                if len(ecosystem & set(neighbors(n))) is 3:
+                if len(set(n.getNeighbors())) is 3:
                     new_board.append(n)
         return new_board
 
