@@ -33,9 +33,6 @@ class GameTest(unittest.TestCase):
         # Testing if is assigned successfully
         self.assertTrue(isinstance(game, Game))
 
-        # Testing default configurations
-        self.assertEqual([game.x, game.y], self.dimensions)
-
         # Testing life generation
         self.assertEqual(len(self.__str__), 820)
 
@@ -59,10 +56,10 @@ class GameTest(unittest.TestCase):
         self.__str__ = str(self.game)
 
         # Testing number of alive cells
-        self.assertEqual(self.__str__.count("*"), 12)
+        self.assertEqual(self.__str__.count("*"), 4)
 
         # Second generation
-        second_generation = [4, 6, 43, 45, 47, 49, 86, 88, 90, 129, 131, 783]
+        second_generation = [47, 49, 86, 88]
 
         # Testing second generation
         self.assertTrue(True for p in second_generation if self.__str__[p] == "*")
