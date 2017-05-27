@@ -39,6 +39,9 @@ class GameTest(unittest.TestCase):
         # Testing life generation
         self.assertEqual(len(self.__str__), 820)
 
+        # Testing number of alive cells
+        self.assertEqual(self.__str__.count("*"), 4)
+
         # Testing correct elements
         self.assertTrue(True for p in self.first_generation if self.__str__[p] == "*")
 
@@ -53,6 +56,10 @@ class GameTest(unittest.TestCase):
 
         # Generate life
         self.game.next_generation()
+        self.__str__ = str(self.game)
+
+        # Testing number of alive cells
+        self.assertEqual(self.__str__.count("*"), 12)
 
         # Second generation
         second_generation = [4, 6, 43, 45, 47, 49, 86, 88, 90, 129, 131, 783]
