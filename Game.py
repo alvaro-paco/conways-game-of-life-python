@@ -13,15 +13,16 @@ class Game:
         """
         self.x = x
         self.y = y
-        self.ecosystem = self.__setup(setup)
+        self.__ecosystem = self.__setup(setup)
 
     def __str__(self):
-        life = self.___fillLife()
-        for row in life:
-            row = ""
+        return_str = ""
+        for row in self.__ecosystem:
+            ecosystem_row = "\n"
             for cell in row:
-                row += " " + str(cell)
-            print('\n', row)
+                ecosystem_row += " " + str(cell)
+            return_str += ecosystem_row
+        return return_str
 
     def __setup(self,cells):
         ecosystem = []
@@ -33,34 +34,47 @@ class Game:
             ecosystem.append(grid_row)
         return ecosystem
 
-    def next_generation(self): pass
+    def next_generation(self):
+        self.___fillLife();
 
     def __draw(self):
         grid = [['o' for y in range(self.y)]for x in range(self.x)]
         return grid
 
+    def __addCellToEcosystem(self, cell):
+        self.__ecosystem[cell.x][cell.y].setLife(True)
+
+    def __removeCellFromEcosystem(self, cell):
+        self.__ecosystem[cell.x][cell.y].setLife(False)
+
+    def __killCells(self, cells):
+        for cell in cells:
+            self.__removeCellFromEcosystem(cell)
+
+    def __reviveCells(self, cells):
+        for cell in cells:
+            self.__addCellToEcosystem(cell)
+
     def ___fillLife(self):
         """Advance the board one step and return it."""
         new_board = []
-        for cell in self.ecosystem:
-            cell_neighbors = cell.getNeighbors()
-            # test if live cell dies
-            if len(cell_neighbors) in [2, 3]:
-                new_board.append(cell)
-            # test dead neighbors to see if alive
-            for n in cell_neighbors:
-                if len(set(n.getNeighbors())) is 3:
-                    new_board.append(n)
-        return new_board
-
-    def __constrain(self, board, size):
-        return set(cell for cell in board if cell[0] <= size and cell[1] <= size)
-
-    def __fillBoard(self, screen):
-        w, h = screen
-        rects = []
-        for i in range(w):
-            for j in range(h):
-                rects.append((i * 9.5, j * 9.5, 9, 9))
-
-        return rects
+        die = []
+        live = []
+        for row in self.__ecosystem:
+            board_row = []
+            for cell in row:
+                cell_live_neighbors = cell.getNeighbors(
+                    ecosystem=self.__ecosystem,
+                    width=self.x, height=self.y)
+                # Any live cell with less than two
+                # neighbors die
+                if cell.live:
+                    if 2 > len(cell_live_neighbors) or len(cell_live_neighbors) > 3:
+                        die.append(cell)
+                if not cell.live and len(cell_live_neighbors) == 3:
+                    live.append(cell)
+                board_row.append(cell)
+            new_board.append(board_row)
+        self.__killCells(die)
+        self.__reviveCells(live)
+        self.__ecosystem = new_board
